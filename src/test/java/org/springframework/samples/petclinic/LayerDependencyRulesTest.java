@@ -26,4 +26,26 @@ class LayerDependencyRulesTest {
 		rule.check(importedClasses);
 	}
 
+	@Test
+	void domainLayerShouldNotDependOnApplicationLayer() {
+		ArchRule rule = noClasses().that()
+			.resideInAPackage("..domain..")
+			.should()
+			.dependOnClassesThat()
+			.resideInAPackage("..application..");
+
+		rule.check(importedClasses);
+	}
+
+	@Test
+	void domainLayerShouldNotDependOnInfrastructureLayer() {
+		ArchRule rule = noClasses().that()
+			.resideInAPackage("..domain..")
+			.should()
+			.dependOnClassesThat()
+			.resideInAPackage("..infrastructure..");
+
+		rule.check(importedClasses);
+	}
+
 }
