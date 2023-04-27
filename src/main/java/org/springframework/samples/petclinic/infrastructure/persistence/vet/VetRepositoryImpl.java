@@ -17,13 +17,13 @@ public class VetRepositoryImpl implements VetRepository {
 	}
 
 	@Override
-	public Page<Vet> findAllBy(int page, int pageSize) {
+	public Page<VetEntity> findAllBy(int page, int pageSize) {
 		Pageable pageable = PageRequest.of(page, pageSize);
 		return this.vetRepository.findAll(pageable);
 	}
 
 	@Override
-	public Collection<Vet> findAll() {
+	public Collection<VetEntity> findAll() {
 		return this.vetRepository.findAll();
 	}
 
