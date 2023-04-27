@@ -15,12 +15,11 @@
  */
 package org.springframework.samples.petclinic.infrastructure.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import org.springframework.samples.petclinic.infrastructure.persistence.vet.VetEntity;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.samples.petclinic.domain.vet.Vet;
 
 /**
  * Simple domain object representing a list of veterinarians. Mostly here to be used for
@@ -31,10 +30,10 @@ import org.springframework.samples.petclinic.infrastructure.persistence.vet.VetE
 @XmlRootElement
 public class Vets {
 
-	private List<VetEntity> vets;
+	private List<Vet> vets;
 
 	@XmlElement
-	public List<VetEntity> getVetList() {
+	public List<Vet> getVetList() {
 		if (vets == null) {
 			vets = new ArrayList<>();
 		}

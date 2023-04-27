@@ -18,7 +18,7 @@ package org.springframework.samples.petclinic.infrastructure.controller;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.samples.petclinic.application.VetService;
-import org.springframework.samples.petclinic.infrastructure.persistence.vet.VetEntity;
+import org.springframework.samples.petclinic.domain.vet.Vet;
 import org.springframework.samples.petclinic.infrastructure.view.Vets;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,14 +46,14 @@ class VetController {
 		// Here we are returning an object of type 'Vets' rather than a collection of Vet
 		// objects so it is simpler for Object-Xml mapping
 		Vets vets = new Vets();
-		Page<VetEntity> paginated = findPaginated(page);
+		Page<Vet> paginated = findPaginated(page);
 		vets.getVetList().addAll(paginated.toList());
 		return addPaginationModel(page, paginated, model);
 
 	}
 
-	private String addPaginationModel(int page, Page<VetEntity> paginated, Model model) {
-		List<VetEntity> listVets = paginated.getContent();
+	private String addPaginationModel(int page, Page<Vet> paginated, Model model) {
+		List<Vet> listVets = paginated.getContent();
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", paginated.getTotalPages());
 		model.addAttribute("totalItems", paginated.getTotalElements());
@@ -61,7 +61,7 @@ class VetController {
 		return "vets/vetList";
 	}
 
-	private Page<VetEntity> findPaginated(int page) {
+	private Page<Vet> findPaginated(int page) {
 		int pageSize = 5;
 		return vetService.getVetPage(page, pageSize);
 	}

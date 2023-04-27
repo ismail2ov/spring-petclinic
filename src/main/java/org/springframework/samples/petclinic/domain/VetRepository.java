@@ -2,12 +2,12 @@ package org.springframework.samples.petclinic.domain;
 
 import java.util.Collection;
 import org.springframework.data.domain.Page;
-import org.springframework.samples.petclinic.infrastructure.persistence.vet.VetEntity;
+import org.springframework.samples.petclinic.domain.vet.Vet;
 
 public interface VetRepository {
 
-	Page<VetEntity> findAllBy(int page, int pageSize);
+	Page<Vet> findAllBy(int page, int pageSize);
 
-	Collection<VetEntity> findAll();
+	Collection<Vet> findAll();
 
 }

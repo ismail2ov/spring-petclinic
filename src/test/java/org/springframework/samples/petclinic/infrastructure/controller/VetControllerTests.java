@@ -16,6 +16,14 @@
 
 package org.springframework.samples.petclinic.infrastructure.controller;
 
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
 import java.util.ArrayList;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,17 +35,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.application.VetService;
-import org.springframework.samples.petclinic.infrastructure.persistence.vet.SpecialtyEntity;
-import org.springframework.samples.petclinic.infrastructure.persistence.vet.VetEntity;
+import org.springframework.samples.petclinic.domain.vet.Specialty;
+import org.springframework.samples.petclinic.domain.vet.Vet;
 import org.springframework.samples.petclinic.infrastructure.view.Vets;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the {@link VetController}
@@ -52,20 +55,20 @@ class VetControllerTests {
 	@MockBean
 	private VetService vetService;
 
-	private VetEntity james() {
-		VetEntity james = new VetEntity();
+	private Vet james() {
+		Vet james = new Vet();
 		james.setFirstName("James");
 		james.setLastName("Carter");
 		james.setId(1);
 		return james;
 	}
 
-	private VetEntity helen() {
-		VetEntity helen = new VetEntity();
+	private Vet helen() {
+		Vet helen = new Vet();
 		helen.setFirstName("Helen");
 		helen.setLastName("Leary");
 		helen.setId(2);
-		SpecialtyEntity radiology = new SpecialtyEntity();
+		Specialty radiology = new Specialty();
 		radiology.setId(1);
 		radiology.setName("radiology");
 		helen.addSpecialty(radiology);
@@ -74,12 +77,12 @@ class VetControllerTests {
 
 	@BeforeEach
 	void setup() {
-		ArrayList<VetEntity> vetsList = Lists.newArrayList(james(), helen());
+		ArrayList<Vet> vetsList = Lists.newArrayList(james(), helen());
 		Vets vets = new Vets();
 		vets.getVetList().addAll(vetsList);
 		given(this.vetService.getVets()).willReturn(vetsList);
 
-		Page<VetEntity> vetsPage = new PageImpl<>(vetsList);
+		Page<Vet> vetsPage = new PageImpl<>(vetsList);
 		given(this.vetService.getVetPage(1, 5)).willReturn(vetsPage);
 	}
 
