@@ -16,18 +16,21 @@
 
 package org.springframework.samples.petclinic.infrastructure.controller;
 
+import java.util.ArrayList;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.samples.petclinic.application.VetService;
 import org.springframework.samples.petclinic.infrastructure.persistence.vet.Specialty;
 import org.springframework.samples.petclinic.infrastructure.persistence.vet.Vet;
-import org.springframework.samples.petclinic.infrastructure.persistence.vet.VetRepository;
+import org.springframework.samples.petclinic.infrastructure.view.Vets;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -48,7 +51,7 @@ class VetControllerTests {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private VetRepository vets;
+	private VetService vetService;
 
 	private Vet james() {
 		Vet james = new Vet();
@@ -72,10 +75,13 @@ class VetControllerTests {
 
 	@BeforeEach
 	void setup() {
-		given(this.vets.findAll()).willReturn(Lists.newArrayList(james(), helen()));
-		given(this.vets.findAll(any(Pageable.class)))
-			.willReturn(new PageImpl<Vet>(Lists.newArrayList(james(), helen())));
+		ArrayList<Vet> vetsList = Lists.newArrayList(james(), helen());
+		Vets vets = new Vets();
+		vets.getVetList().addAll(vetsList);
+		given(this.vetService.getVets()).willReturn(vetsList);
 
+		Page<Vet> vetsPage = new PageImpl<>(vetsList);
+		given(this.vetService.getVetPage(1, 5)).willReturn(vetsPage);
 	}
 
 	@Test
