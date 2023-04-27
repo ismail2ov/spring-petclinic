@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.samples.petclinic.domain.vet.Vet;
 import org.springframework.samples.petclinic.infrastructure.persistence.vet.VetEntity;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface VetMapper {
 
 	Collection<Vet> fromEntities(Collection<VetEntity> vetEntities);
