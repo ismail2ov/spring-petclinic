@@ -112,6 +112,15 @@
       <artifactId>jakarta.xml.bind-api</artifactId>
     </dependency>
 
+    <!-- ArchUnit-->
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit</artifactId>
+      <version>1.0.1</version>
+      <scope>test</scope>
+    </dependency>
+
+
   </dependencies>
 
   <build>
