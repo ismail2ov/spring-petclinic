@@ -22,9 +22,12 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PropertyComparator;
 import org.springframework.samples.petclinic.infrastructure.persistence.model.Person;
 
 /**
@@ -56,7 +59,9 @@ public class VetEntity extends Person {
 	}
 
 	public List<SpecialtyEntity> getSpecialties() {
-		return new ArrayList<>(getSpecialtiesInternal());
+		List<SpecialtyEntity> sortedSpecs = new ArrayList<>(getSpecialtiesInternal());
+		PropertyComparator.sort(sortedSpecs, new MutableSortDefinition("name", true, true));
+		return Collections.unmodifiableList(sortedSpecs);
 	}
 
 	public int getNrOfSpecialties() {
