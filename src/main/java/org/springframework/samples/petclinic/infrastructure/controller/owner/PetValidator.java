@@ -15,7 +15,7 @@
  */
 package org.springframework.samples.petclinic.infrastructure.controller.owner;
 
-import org.springframework.samples.petclinic.owner.Pet;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.Pet;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

@@ -24,12 +24,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.samples.petclinic.infrastructure.controller.owner.PetController;
-import org.springframework.samples.petclinic.infrastructure.controller.owner.PetTypeFormatter;
-import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.owner.OwnerRepository;
-import org.springframework.samples.petclinic.owner.Pet;
-import org.springframework.samples.petclinic.owner.PetType;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.Owner;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.Pet;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.BDDMockito.given;

@@ -28,11 +28,11 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.owner.OwnerRepository;
-import org.springframework.samples.petclinic.owner.Pet;
-import org.springframework.samples.petclinic.owner.PetType;
-import org.springframework.samples.petclinic.owner.Visit;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.Owner;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.Pet;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetType;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.Visit;
 import org.springframework.samples.petclinic.infrastructure.persistence.vet.VetEntity;
 import org.springframework.samples.petclinic.infrastructure.persistence.vet.VetDataRepository;
 import org.springframework.transaction.annotation.Transactional;
