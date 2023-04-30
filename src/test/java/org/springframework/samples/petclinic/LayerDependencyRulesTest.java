@@ -7,43 +7,42 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchRule;
 import org.junit.jupiter.api.Test;
 
-/*
- * Used the example of: https://github.com/TNG/ArchUnit-Examples/blob/fe7e56f399d364fe1d71fb39629fc2b58489b5ee/example-plain/src/test/java/com/tngtech/archunit/exampletest/LayerDependencyRulesTest.java
+/**
+ * For other usage examples * @see <a href=
+ * "https://github.com/TNG/ArchUnit-Examples/blob/fe7e56f399d364fe1d71fb39629fc2b58489b5ee/example-plain/src/test/java/com/tngtech/archunit/exampletest/LayerDependencyRulesTest.java">LayerDependencyRulesTest</a>
  */
 class LayerDependencyRulesTest {
 
-	private final JavaClasses importedClasses = new ClassFileImporter()
-		.importPackages("org.springframework.samples.petclinic");
+	public static final String BASE_PACKAGE = "org.springframework.samples.petclinic";
+
+	public static final String APPLICATION_PACKAGE = BASE_PACKAGE + ".application..";
+
+	public static final String DOMAIN_PACKAGE = BASE_PACKAGE + ".domain..";
+
+	private final JavaClasses importedClasses = new ClassFileImporter().importPackages(BASE_PACKAGE);
+
+	private static final String JAVA_STANDARD_LIBRARY = "java..";
 
 	@Test
-	void applicationLayerShouldNotDependOnInfrastructureLayer() {
+	void applicationLayerShouldDependOnDomainLayerAndJavaStandardLibrary() {
+
 		ArchRule rule = noClasses().that()
-			.resideInAPackage("..application..")
+			.resideInAPackage(APPLICATION_PACKAGE)
 			.should()
 			.dependOnClassesThat()
-			.resideInAPackage("..infrastructure..");
+			.resideOutsideOfPackages(APPLICATION_PACKAGE, DOMAIN_PACKAGE, JAVA_STANDARD_LIBRARY);
 
 		rule.check(importedClasses);
 	}
 
 	@Test
-	void domainLayerShouldNotDependOnApplicationLayer() {
+	void domainLayerShouldDependOnJavaStandardLibrary() {
+
 		ArchRule rule = noClasses().that()
-			.resideInAPackage("..domain..")
+			.resideInAPackage(DOMAIN_PACKAGE)
 			.should()
 			.dependOnClassesThat()
-			.resideInAPackage("..application..");
-
-		rule.check(importedClasses);
-	}
-
-	@Test
-	void domainLayerShouldNotDependOnInfrastructureLayer() {
-		ArchRule rule = noClasses().that()
-			.resideInAPackage("..domain..")
-			.should()
-			.dependOnClassesThat()
-			.resideInAPackage("..infrastructure..");
+			.resideOutsideOfPackages(DOMAIN_PACKAGE, JAVA_STANDARD_LIBRARY);
 
 		rule.check(importedClasses);
 	}
