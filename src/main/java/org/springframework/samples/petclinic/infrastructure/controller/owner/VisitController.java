@@ -17,10 +17,10 @@ package org.springframework.samples.petclinic.infrastructure.controller.owner;
 
 import java.util.Map;
 
-import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.owner.OwnerRepository;
-import org.springframework.samples.petclinic.owner.Pet;
-import org.springframework.samples.petclinic.owner.Visit;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.Owner;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.Pet;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.Visit;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
