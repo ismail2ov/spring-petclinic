@@ -31,10 +31,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.application.VetService;
+import org.springframework.samples.petclinic.domain.model.PagedResult;
 import org.springframework.samples.petclinic.domain.vet.Specialty;
 import org.springframework.samples.petclinic.domain.vet.Vet;
 import org.springframework.samples.petclinic.infrastructure.view.Vets;
@@ -82,8 +81,8 @@ class VetControllerTests {
 		vets.getVetList().addAll(vetsList);
 		given(this.vetService.getVets()).willReturn(vetsList);
 
-		Page<Vet> vetsPage = new PageImpl<>(vetsList);
-		given(this.vetService.getVetPage(1, 5)).willReturn(vetsPage);
+		PagedResult<Vet> vetsPage = new PagedResult<>(vetsList, 6);
+		given(this.vetService.getVetPage(0, 5)).willReturn(vetsPage);
 	}
 
 	@Test

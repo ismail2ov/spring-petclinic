@@ -17,7 +17,11 @@ package org.springframework.samples.petclinic.infrastructure.controller;
 
 import java.util.List;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.application.VetService;
+import org.springframework.samples.petclinic.domain.model.PagedResult;
 import org.springframework.samples.petclinic.domain.vet.Vet;
 import org.springframework.samples.petclinic.infrastructure.view.Vets;
 import org.springframework.stereotype.Controller;
@@ -63,7 +67,9 @@ class VetController {
 
 	private Page<Vet> findPaginated(int page) {
 		int pageSize = 5;
-		return vetService.getVetPage(page, pageSize);
+		PagedResult<Vet> vetPage = vetService.getVetPage(page - 1, pageSize);
+		Pageable pageable = PageRequest.of(page - 1, pageSize);
+		return new PageImpl<>(vetPage.getContent(), pageable, vetPage.getTotalElements());
 	}
 
 	@GetMapping({ "/vets" })

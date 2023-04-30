@@ -1,8 +1,8 @@
 package org.springframework.samples.petclinic.infrastructure.persistence.mapper;
 
 import java.util.Collection;
+import java.util.List;
 import org.mapstruct.Mapper;
-import org.springframework.data.domain.Page;
 import org.springframework.samples.petclinic.domain.vet.Vet;
 import org.springframework.samples.petclinic.infrastructure.persistence.vet.VetEntity;
 
@@ -11,10 +11,6 @@ public interface VetMapper {
 
 	Collection<Vet> fromEntities(Collection<VetEntity> vetEntities);
 
-	Vet fromEntitiesPage(VetEntity vetEntity);
-
-	default Page<Vet> fromEntitiesPage(Page<VetEntity> vetEntitiesPage) {
-		return vetEntitiesPage.map(this::fromEntitiesPage);
-	}
+	List<Vet> from(List<VetEntity> vetEntities);
 
 }

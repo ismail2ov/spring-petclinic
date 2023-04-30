@@ -1,8 +1,8 @@
 package org.springframework.samples.petclinic.application;
 
 import java.util.Collection;
-import org.springframework.data.domain.Page;
 import org.springframework.samples.petclinic.domain.VetRepository;
+import org.springframework.samples.petclinic.domain.model.PagedResult;
 import org.springframework.samples.petclinic.domain.vet.Vet;
 
 public class VetService {
@@ -13,7 +13,7 @@ public class VetService {
 		this.vetRepository = vetRepository;
 	}
 
-	public Page<Vet> getVetPage(int page, int pageSize) {
+	public PagedResult<Vet> getVetPage(int page, int pageSize) {
 		return this.vetRepository.findAllBy(page, pageSize);
 	}
 
