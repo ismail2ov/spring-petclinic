@@ -4,9 +4,7 @@ import java.util.Collection;
 import org.springframework.data.domain.Page;
 import org.springframework.samples.petclinic.domain.VetRepository;
 import org.springframework.samples.petclinic.domain.vet.Vet;
-import org.springframework.stereotype.Service;
 
-@Service
 public class VetService {
 
 	private final VetRepository vetRepository;
