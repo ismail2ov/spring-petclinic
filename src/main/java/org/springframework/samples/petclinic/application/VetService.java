@@ -1,6 +1,6 @@
 package org.springframework.samples.petclinic.application;
 
-import java.util.Collection;
+import java.util.List;
 import org.springframework.samples.petclinic.domain.VetRepository;
 import org.springframework.samples.petclinic.domain.model.PagedResult;
 import org.springframework.samples.petclinic.domain.vet.Vet;
@@ -17,7 +17,7 @@ public class VetService {
 		return this.vetRepository.findAllBy(page, pageSize);
 	}
 
-	public Collection<Vet> getVets() {
+	public List<Vet> getVets() {
 		return this.vetRepository.findAll();
 	}
 

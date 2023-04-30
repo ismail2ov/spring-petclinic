@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.infrastructure.controller;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,7 @@ import org.springframework.samples.petclinic.application.VetService;
 import org.springframework.samples.petclinic.domain.model.PagedResult;
 import org.springframework.samples.petclinic.domain.vet.Vet;
 import org.springframework.samples.petclinic.infrastructure.controller.mapper.VetDtoMapper;
+import org.springframework.samples.petclinic.infrastructure.view.VetDto;
 import org.springframework.samples.petclinic.infrastructure.view.Vets;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,30 +40,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Arjen Poutsma
  */
 @Controller
+@RequiredArgsConstructor
 class VetController {
 
 	private final VetService vetService;
 
 	private final VetDtoMapper mapper;
 
-	public VetController(VetService vetService, VetDtoMapper mapper) {
-		this.vetService = vetService;
-		this.mapper = mapper;
-	}
-
 	@GetMapping("/vets.html")
 	public String showVetList(@RequestParam(defaultValue = "1") int page, Model model) {
 		// Here we are returning an object of type 'Vets' rather than a collection of Vet
 		// objects so it is simpler for Object-Xml mapping
-		Vets vets = new Vets();
-		Page<Vet> paginated = findPaginated(page);
-		vets.getVetList().addAll(mapper.from(paginated.toList()));
+		Page<VetDto> paginated = findPaginated(page);
+
 		return addPaginationModel(page, paginated, model);
 
 	}
 
-	private String addPaginationModel(int page, Page<Vet> paginated, Model model) {
-		List<Vet> listVets = paginated.getContent();
+	private String addPaginationModel(int page, Page<VetDto> paginated, Model model) {
+		List<VetDto> listVets = paginated.getContent();
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", paginated.getTotalPages());
 		model.addAttribute("totalItems", paginated.getTotalElements());
@@ -69,20 +66,20 @@ class VetController {
 		return "vets/vetList";
 	}
 
-	private Page<Vet> findPaginated(int page) {
+	private Page<VetDto> findPaginated(int page) {
 		int pageSize = 5;
 		PagedResult<Vet> vetPage = vetService.getVetPage(page - 1, pageSize);
+		List<VetDto> vetList = mapper.from(vetPage.getContent());
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
-		return new PageImpl<>(vetPage.getContent(), pageable, vetPage.getTotalElements());
+		return new PageImpl<>(vetList, pageable, vetPage.getTotalElements());
 	}
 
 	@GetMapping({ "/vets" })
 	public @ResponseBody Vets showResourcesVetList() {
 		// Here we are returning an object of type 'Vets' rather than a collection of Vet
 		// objects so it is simpler for JSon/Object mapping
-		Vets vets = new Vets();
-		vets.getVetList().addAll(mapper.from(vetService.getVets()));
-		return vets;
+		List<VetDto> vetsList = mapper.from(vetService.getVets());
+		return new Vets(vetsList);
 	}
 
 }

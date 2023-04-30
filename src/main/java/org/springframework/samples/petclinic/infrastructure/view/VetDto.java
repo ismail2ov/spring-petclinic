@@ -6,11 +6,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.samples.petclinic.domain.model.PersonModel;
 import org.springframework.samples.petclinic.domain.vet.Specialty;
 
+@Getter
+@SuperBuilder
 public class VetDto extends PersonModel {
 
 	private Set<Specialty> specialties;
@@ -22,10 +26,6 @@ public class VetDto extends PersonModel {
 		return this.specialties;
 	}
 
-	public void setSpecialties(Set<Specialty> specialties) {
-		this.specialties = specialties;
-	}
-
 	@XmlElement
 	public List<Specialty> getSpecialties() {
 		List<Specialty> sortedSpecs = new ArrayList<>(getSpecialtiesInternal());
@@ -35,10 +35,6 @@ public class VetDto extends PersonModel {
 
 	public int getNrOfSpecialties() {
 		return getSpecialtiesInternal().size();
-	}
-
-	public void addSpecialty(Specialty specialty) {
-		getSpecialtiesInternal().add(specialty);
 	}
 
 }

@@ -15,37 +15,15 @@
  */
 package org.springframework.samples.petclinic.domain.vet;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.samples.petclinic.domain.model.PersonModel;
 
+@Getter
+@SuperBuilder
 public class Vet extends PersonModel {
 
 	private Set<Specialty> specialties;
-
-	protected Set<Specialty> getSpecialtiesInternal() {
-		if (this.specialties == null) {
-			this.specialties = new HashSet<>();
-		}
-		return this.specialties;
-	}
-
-	public void setSpecialties(Set<Specialty> specialties) {
-		this.specialties = specialties;
-	}
-
-	public List<Specialty> getSpecialties() {
-		return new ArrayList<>(getSpecialtiesInternal());
-	}
-
-	public int getNrOfSpecialties() {
-		return getSpecialtiesInternal().size();
-	}
-
-	public void addSpecialty(Specialty specialty) {
-		getSpecialtiesInternal().add(specialty);
-	}
 
 }

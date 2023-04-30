@@ -15,19 +15,14 @@
  */
 package org.springframework.samples.petclinic.domain.model;
 
-import java.io.Serializable;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
-public class BaseModel implements Serializable {
+@Getter
+@SuperBuilder
+public class BaseModel {
 
 	private Integer id;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	public boolean isNew() {
 		return this.id == null;

@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
+import java.util.Set;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,23 +58,13 @@ class VetControllerTests {
 	private VetService vetService;
 
 	private Vet james() {
-		Vet james = new Vet();
-		james.setFirstName("James");
-		james.setLastName("Carter");
-		james.setId(1);
-		return james;
+		return Vet.builder().id(1).firstName("James").lastName("Carter").build();
 	}
 
 	private Vet helen() {
-		Vet helen = new Vet();
-		helen.setFirstName("Helen");
-		helen.setLastName("Leary");
-		helen.setId(2);
-		Specialty radiology = new Specialty();
-		radiology.setId(1);
-		radiology.setName("radiology");
-		helen.addSpecialty(radiology);
-		return helen;
+		Specialty radiology = Specialty.builder().id(1).name("radiology").build();
+
+		return Vet.builder().id(2).firstName("Helen").lastName("Leary").specialties(Set.of(radiology)).build();
 	}
 
 	@BeforeEach

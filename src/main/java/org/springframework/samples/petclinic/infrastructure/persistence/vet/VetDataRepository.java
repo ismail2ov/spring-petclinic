@@ -15,14 +15,13 @@
  */
 package org.springframework.samples.petclinic.infrastructure.persistence.vet;
 
+import java.util.List;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
 
 /**
  * Repository class for <code>Vet</code> domain objects All method names are compliant
@@ -39,11 +38,11 @@ public interface VetDataRepository extends Repository<VetEntity, Integer> {
 
 	/**
 	 * Retrieve all <code>Vet</code>s from the data store.
-	 * @return a <code>Collection</code> of <code>Vet</code>s
+	 * @return a <code>List</code> of <code>Vet</code>s
 	 */
 	@Transactional(readOnly = true)
 	@Cacheable("vets")
-	Collection<VetEntity> findAll() throws DataAccessException;
+	List<VetEntity> findAll() throws DataAccessException;
 
 	/**
 	 * Retrieve all <code>Vet</code>s from data store in Pages

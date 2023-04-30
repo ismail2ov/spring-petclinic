@@ -15,17 +15,14 @@
  */
 package org.springframework.samples.petclinic.domain.model;
 
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@SuperBuilder
 public class NamedModel extends BaseModel {
 
 	private String name;
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	@Override
 	public String toString() {

@@ -15,8 +15,10 @@
  */
 package org.springframework.samples.petclinic.domain.vet;
 
+import lombok.experimental.SuperBuilder;
 import org.springframework.samples.petclinic.domain.model.NamedModel;
 
+@SuperBuilder
 public class Specialty extends NamedModel {
 
 }
