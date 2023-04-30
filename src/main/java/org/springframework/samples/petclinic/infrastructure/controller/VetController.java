@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.application.VetService;
 import org.springframework.samples.petclinic.domain.model.PagedResult;
 import org.springframework.samples.petclinic.domain.vet.Vet;
+import org.springframework.samples.petclinic.infrastructure.controller.mapper.VetDtoMapper;
 import org.springframework.samples.petclinic.infrastructure.view.Vets;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,8 +42,11 @@ class VetController {
 
 	private final VetService vetService;
 
-	public VetController(VetService vetService) {
+	private final VetDtoMapper mapper;
+
+	public VetController(VetService vetService, VetDtoMapper mapper) {
 		this.vetService = vetService;
+		this.mapper = mapper;
 	}
 
 	@GetMapping("/vets.html")
@@ -51,7 +55,7 @@ class VetController {
 		// objects so it is simpler for Object-Xml mapping
 		Vets vets = new Vets();
 		Page<Vet> paginated = findPaginated(page);
-		vets.getVetList().addAll(paginated.toList());
+		vets.getVetList().addAll(mapper.from(paginated.toList()));
 		return addPaginationModel(page, paginated, model);
 
 	}
@@ -77,7 +81,7 @@ class VetController {
 		// Here we are returning an object of type 'Vets' rather than a collection of Vet
 		// objects so it is simpler for JSon/Object mapping
 		Vets vets = new Vets();
-		vets.getVetList().addAll(vetService.getVets());
+		vets.getVetList().addAll(mapper.from(vetService.getVets()));
 		return vets;
 	}
 

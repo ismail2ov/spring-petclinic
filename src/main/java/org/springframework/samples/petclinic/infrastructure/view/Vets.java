@@ -19,7 +19,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.samples.petclinic.domain.vet.Vet;
 
 /**
  * Simple domain object representing a list of veterinarians. Mostly here to be used for
@@ -30,14 +29,14 @@ import org.springframework.samples.petclinic.domain.vet.Vet;
 @XmlRootElement
 public class Vets {
 
-	private List<Vet> vets;
+	private List<VetDto> vetsList;
 
 	@XmlElement
-	public List<Vet> getVetList() {
-		if (vets == null) {
-			vets = new ArrayList<>();
+	public List<VetDto> getVetList() {
+		if (vetsList == null) {
+			vetsList = new ArrayList<>();
 		}
-		return vets;
+		return vetsList;
 	}
 
 }
