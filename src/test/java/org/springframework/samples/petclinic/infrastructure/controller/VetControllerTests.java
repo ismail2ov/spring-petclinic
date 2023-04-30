@@ -31,12 +31,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.application.VetService;
 import org.springframework.samples.petclinic.domain.model.PagedResult;
 import org.springframework.samples.petclinic.domain.vet.Specialty;
 import org.springframework.samples.petclinic.domain.vet.Vet;
-import org.springframework.samples.petclinic.infrastructure.view.Vets;
+import org.springframework.samples.petclinic.infrastructure.controller.mapper.VetDtoMapperImpl;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -46,6 +47,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
  */
 
 @WebMvcTest(VetController.class)
+@Import(VetDtoMapperImpl.class)
 class VetControllerTests {
 
 	@Autowired
@@ -77,8 +79,7 @@ class VetControllerTests {
 	@BeforeEach
 	void setup() {
 		ArrayList<Vet> vetsList = Lists.newArrayList(james(), helen());
-		Vets vets = new Vets();
-		vets.getVetList().addAll(vetsList);
+
 		given(this.vetService.getVets()).willReturn(vetsList);
 
 		PagedResult<Vet> vetsPage = new PagedResult<>(vetsList, 6);

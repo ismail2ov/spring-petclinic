@@ -15,23 +15,17 @@
  */
 package org.springframework.samples.petclinic.infrastructure.persistence.vet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
-import org.springframework.samples.petclinic.infrastructure.persistence.model.Person;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.xml.bind.annotation.XmlElement;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.springframework.samples.petclinic.infrastructure.persistence.model.Person;
 
 /**
  * Simple JavaBean domain object representing a veterinarian.
@@ -61,11 +55,8 @@ public class VetEntity extends Person {
 		this.specialties = specialties;
 	}
 
-	@XmlElement
 	public List<SpecialtyEntity> getSpecialties() {
-		List<SpecialtyEntity> sortedSpecs = new ArrayList<>(getSpecialtiesInternal());
-		PropertyComparator.sort(sortedSpecs, new MutableSortDefinition("name", true, true));
-		return Collections.unmodifiableList(sortedSpecs);
+		return new ArrayList<>(getSpecialtiesInternal());
 	}
 
 	public int getNrOfSpecialties() {

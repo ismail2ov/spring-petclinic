@@ -15,7 +15,6 @@
  */
 package org.springframework.samples.petclinic.domain.vet;
 
-import jakarta.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,11 +32,10 @@ public class Vet extends PersonModel {
 		return this.specialties;
 	}
 
-	protected void setSpecialtiesInternal(Set<Specialty> specialties) {
+	public void setSpecialties(Set<Specialty> specialties) {
 		this.specialties = specialties;
 	}
 
-	@XmlElement
 	public List<Specialty> getSpecialties() {
 		return new ArrayList<>(getSpecialtiesInternal());
 	}
