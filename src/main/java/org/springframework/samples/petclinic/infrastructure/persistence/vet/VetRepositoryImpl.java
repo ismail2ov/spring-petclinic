@@ -1,6 +1,5 @@
 package org.springframework.samples.petclinic.infrastructure.persistence.vet;
 
-import java.util.Collection;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,9 +33,9 @@ public class VetRepositoryImpl implements VetRepository {
 	}
 
 	@Override
-	public Collection<Vet> findAll() {
-		Collection<VetEntity> vetEntities = this.vetRepository.findAll();
-		return vetMapper.fromEntities(vetEntities);
+	public List<Vet> findAll() {
+		List<VetEntity> vetEntities = this.vetRepository.findAll();
+		return vetMapper.from(vetEntities);
 	}
 
 }

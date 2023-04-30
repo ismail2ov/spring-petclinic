@@ -31,6 +31,10 @@ public class Vets {
 
 	private List<VetDto> vetsList;
 
+	public Vets(List<VetDto> vetsList) {
+		this.vetsList = vetsList;
+	}
+
 	@XmlElement
 	public List<VetDto> getVetList() {
 		if (vetsList == null) {
