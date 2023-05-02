@@ -35,48 +35,48 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Sam Brannen
  * @author Michael Isvy
  */
-public interface OwnerRepository extends Repository<Owner, Integer> {
+public interface OwnerRepository extends Repository<OwnerEntity, Integer> {
 
 	/**
-	 * Retrieve all {@link PetType}s from the data store.
-	 * @return a Collection of {@link PetType}s.
+	 * Retrieve all {@link PetTypeEntity}s from the data store.
+	 * @return a Collection of {@link PetTypeEntity}s.
 	 */
-	@Query("SELECT ptype FROM PetType ptype ORDER BY ptype.name")
+	@Query("SELECT ptype FROM PetTypeEntity ptype ORDER BY ptype.name")
 	@Transactional(readOnly = true)
-	List<PetType> findPetTypes();
+	List<PetTypeEntity> findPetTypes();
 
 	/**
-	 * Retrieve {@link Owner}s from the data store by last name, returning all owners
-	 * whose last name <i>starts</i> with the given name.
+	 * Retrieve {@link OwnerEntity}s from the data store by last name, returning all
+	 * owners whose last name <i>starts</i> with the given name.
 	 * @param lastName Value to search for
-	 * @return a Collection of matching {@link Owner}s (or an empty Collection if none
-	 * found)
+	 * @return a Collection of matching {@link OwnerEntity}s (or an empty Collection if
+	 * none found)
 	 */
 
-	@Query("SELECT DISTINCT owner FROM Owner owner left join  owner.pets WHERE owner.lastName LIKE :lastName% ")
+	@Query("SELECT DISTINCT owner FROM OwnerEntity owner left join  owner.pets WHERE owner.lastName LIKE :lastName% ")
 	@Transactional(readOnly = true)
-	Page<Owner> findByLastName(@Param("lastName") String lastName, Pageable pageable);
+	Page<OwnerEntity> findByLastName(@Param("lastName") String lastName, Pageable pageable);
 
 	/**
-	 * Retrieve an {@link Owner} from the data store by id.
+	 * Retrieve an {@link OwnerEntity} from the data store by id.
 	 * @param id the id to search for
-	 * @return the {@link Owner} if found
+	 * @return the {@link OwnerEntity} if found
 	 */
-	@Query("SELECT owner FROM Owner owner left join fetch owner.pets WHERE owner.id =:id")
+	@Query("SELECT owner FROM OwnerEntity owner left join fetch owner.pets WHERE owner.id =:id")
 	@Transactional(readOnly = true)
-	Owner findById(@Param("id") Integer id);
+	OwnerEntity findById(@Param("id") Integer id);
 
 	/**
-	 * Save an {@link Owner} to the data store, either inserting or updating it.
-	 * @param owner the {@link Owner} to save
+	 * Save an {@link OwnerEntity} to the data store, either inserting or updating it.
+	 * @param owner the {@link OwnerEntity} to save
 	 */
-	void save(Owner owner);
+	void save(OwnerEntity owner);
 
 	/**
 	 * Returns all the owners from data store
 	 **/
-	@Query("SELECT owner FROM Owner owner")
+	@Query("SELECT owner FROM OwnerEntity owner")
 	@Transactional(readOnly = true)
-	Page<Owner> findAll(Pageable pageable);
+	Page<OwnerEntity> findAll(Pageable pageable);
 
 }

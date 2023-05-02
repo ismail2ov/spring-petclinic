@@ -15,13 +15,6 @@
  */
 package org.springframework.samples.petclinic.infrastructure.persistence.owner;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.core.style.ToStringCreator;
-import org.springframework.samples.petclinic.infrastructure.persistence.model.Person;
-import org.springframework.util.Assert;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +25,11 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.core.style.ToStringCreator;
+import org.springframework.samples.petclinic.infrastructure.persistence.model.Person;
+import org.springframework.util.Assert;
 
 /**
  * Simple JavaBean domain object representing an owner.
@@ -44,7 +42,7 @@ import jakarta.validation.constraints.NotEmpty;
  */
 @Entity
 @Table(name = "owners")
-public class Owner extends Person {
+public class OwnerEntity extends Person {
 
 	@Column(name = "address")
 	@NotEmpty
@@ -62,7 +60,7 @@ public class Owner extends Person {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "owner_id")
 	@OrderBy("name")
-	private List<Pet> pets = new ArrayList<>();
+	private List<PetEntity> pets = new ArrayList<>();
 
 	public String getAddress() {
 		return this.address;
@@ -88,11 +86,15 @@ public class Owner extends Person {
 		this.telephone = telephone;
 	}
 
-	public List<Pet> getPets() {
+	public List<PetEntity> getPets() {
 		return this.pets;
 	}
 
-	public void addPet(Pet pet) {
+	public void setPets(List<PetEntity> pets) {
+		this.pets = pets;
+	}
+
+	public void addPet(PetEntity pet) {
 		if (pet.isNew()) {
 			getPets().add(pet);
 		}
@@ -103,7 +105,7 @@ public class Owner extends Person {
 	 * @param name to test
 	 * @return a pet if pet name is already in use
 	 */
-	public Pet getPet(String name) {
+	public PetEntity getPet(String name) {
 		return getPet(name, false);
 	}
 
@@ -112,8 +114,8 @@ public class Owner extends Person {
 	 * @param id to test
 	 * @return a pet if pet id is already in use
 	 */
-	public Pet getPet(Integer id) {
-		for (Pet pet : getPets()) {
+	public PetEntity getPet(Integer id) {
+		for (PetEntity pet : getPets()) {
 			if (!pet.isNew()) {
 				Integer compId = pet.getId();
 				if (compId.equals(id)) {
@@ -129,9 +131,9 @@ public class Owner extends Person {
 	 * @param name to test
 	 * @return a pet if pet name is already in use
 	 */
-	public Pet getPet(String name, boolean ignoreNew) {
+	public PetEntity getPet(String name, boolean ignoreNew) {
 		name = name.toLowerCase();
-		for (Pet pet : getPets()) {
+		for (PetEntity pet : getPets()) {
 			if (!ignoreNew || !pet.isNew()) {
 				String compName = pet.getName();
 				compName = compName == null ? "" : compName.toLowerCase();
@@ -156,16 +158,17 @@ public class Owner extends Person {
 	}
 
 	/**
-	 * Adds the given {@link Visit} to the {@link Pet} with the given identifier.
-	 * @param petId the identifier of the {@link Pet}, must not be {@literal null}.
+	 * Adds the given {@link VisitEntity} to the {@link PetEntity} with the given
+	 * identifier.
+	 * @param petId the identifier of the {@link PetEntity}, must not be {@literal null}.
 	 * @param visit the visit to add, must not be {@literal null}.
 	 */
-	public void addVisit(Integer petId, Visit visit) {
+	public void addVisit(Integer petId, VisitEntity visit) {
 
 		Assert.notNull(petId, "Pet identifier must not be null!");
 		Assert.notNull(visit, "Visit must not be null!");
 
-		Pet pet = getPet(petId);
+		PetEntity pet = getPet(petId);
 
 		Assert.notNull(pet, "Invalid Pet identifier!");
 

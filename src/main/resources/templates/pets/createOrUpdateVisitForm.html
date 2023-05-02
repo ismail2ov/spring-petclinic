@@ -4,7 +4,7 @@
 <body>
 
   <h2>
-    <th:block th:if="${visit['new']}">New </th:block>
+    <th:block th:if="${visitDto['new']}">New </th:block>
     Visit
   </h2>
 
@@ -19,16 +19,16 @@
       </tr>
     </thead>
     <tr>
-      <td th:text="${pet.name}"></td>
+      <td th:text="${petDto.name}"></td>
       <td
-        th:text="${#temporals.format(pet.birthDate, 'yyyy-MM-dd')}"></td>
-      <td th:text="${pet.type}"></td>
+        th:text="${#temporals.format(petDto.birthDate, 'yyyy-MM-dd')}"></td>
+      <td th:text="${petDto.type}"></td>
       <td
-        th:text="${owner?.firstName + ' ' + owner?.lastName}"></td>
+        th:text="${ownerDto?.firstName + ' ' + ownerDto?.lastName}"></td>
     </tr>
   </table>
 
-  <form th:object="${visit}" class="form-horizontal" method="post">
+  <form th:object="${visitDto}" class="form-horizontal" method="post">
     <div class="form-group has-feedback">
       <input
         th:replace="~{fragments/inputField :: input ('Date', 'date', 'date')}"  />
@@ -38,7 +38,7 @@
 
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <input type="hidden" name="petId" th:value="${pet.id}" />
+        <input type="hidden" name="petId" th:value="${petDto.id}" />
         <button class="btn btn-primary" type="submit">Add Visit</button>
       </div>
     </div>
@@ -51,9 +51,9 @@
       <th>Date</th>
       <th>Description</th>
     </tr>
-    <tr th:if="${!visit['new']}" th:each="visit : ${pet.visits}">
-      <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"></td>
-      <td th:text=" ${visit.description}"></td>
+    <tr th:if="${!visitDto['new']}" th:each="visitDto : ${petDto.visits}">
+      <td th:text="${#temporals.format(visitDto.date, 'yyyy-MM-dd')}"></td>
+      <td th:text=" ${visitDto.description}"></td>
     </tr>
   </table>
 

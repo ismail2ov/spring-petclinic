@@ -33,7 +33,7 @@ import jakarta.validation.constraints.NotEmpty;
  */
 @Entity
 @Table(name = "visits")
-public class Visit extends BaseEntity {
+public class VisitEntity extends BaseEntity {
 
 	@Column(name = "visit_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -45,7 +45,7 @@ public class Visit extends BaseEntity {
 	/**
 	 * Creates a new instance of Visit for the current date
 	 */
-	public Visit() {
+	public VisitEntity() {
 		this.date = LocalDate.now();
 	}
 

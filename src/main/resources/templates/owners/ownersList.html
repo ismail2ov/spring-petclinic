@@ -17,14 +17,14 @@
   </tr>
   </thead>
   <tbody>
-  <tr th:each="owner : ${listOwners}">
+  <tr th:each="ownerDto : ${listOwners}">
     <td>
-      <a th:href="@{/owners/__${owner.id}__}" th:text="${owner.firstName + ' ' + owner.lastName}"/></a>
+      <a th:href="@{/owners/__${ownerDto.id}__}" th:text="${ownerDto.firstName + ' ' + ownerDto.lastName}"/></a>
     </td>
-    <td th:text="${owner.address}"/>
-    <td th:text="${owner.city}"/>
-    <td th:text="${owner.telephone}"/>
-    <td><span th:text="${#strings.listJoin(owner.pets, ', ')}"/></td>
+    <td th:text="${ownerDto.address}"/>
+    <td th:text="${ownerDto.city}"/>
+    <td th:text="${ownerDto.telephone}"/>
+    <td><span th:text="${#strings.listJoin(ownerDto.pets, ', ')}"/></td>
   </tr>
   </tbody>
 </table>
