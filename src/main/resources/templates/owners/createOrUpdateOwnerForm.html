@@ -4,7 +4,7 @@
 <body>
 
   <h2>Owner</h2>
-  <form th:object="${owner}" class="form-horizontal" id="add-owner-form" method="post">
+  <form th:object="${ownerDto}" class="form-horizontal" id="add-owner-form" method="post">
     <div class="form-group has-feedback">
       <input
         th:replace="~{fragments/inputField :: input ('First Name', 'firstName', 'text')}" />
@@ -20,7 +20,7 @@
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
         <button
-          th:with="text=${owner['new']} ? 'Add Owner' : 'Update Owner'"
+          th:with="text=${ownerDto['new']} ? 'Add Owner' : 'Update Owner'"
           class="btn btn-primary" type="submit" th:text="${text}">Add
           Owner</button>
       </div>

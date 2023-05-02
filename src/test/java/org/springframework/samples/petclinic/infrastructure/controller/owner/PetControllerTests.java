@@ -24,10 +24,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.Owner;
+import org.springframework.context.annotation.Import;
+import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapperImpl;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerEntity;
 import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.Pet;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetType;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetEntity;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetTypeEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.BDDMockito.given;
@@ -42,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(value = PetController.class,
 		includeFilters = @ComponentScan.Filter(value = PetTypeFormatter.class, type = FilterType.ASSIGNABLE_TYPE))
+@Import(OwnerDtoMapperImpl.class)
 class PetControllerTests {
 
 	private static final int TEST_OWNER_ID = 1;
@@ -56,12 +59,12 @@ class PetControllerTests {
 
 	@BeforeEach
 	void setup() {
-		PetType cat = new PetType();
+		PetTypeEntity cat = new PetTypeEntity();
 		cat.setId(3);
 		cat.setName("hamster");
 		given(this.owners.findPetTypes()).willReturn(Lists.newArrayList(cat));
-		Owner owner = new Owner();
-		Pet pet = new Pet();
+		OwnerEntity owner = new OwnerEntity();
+		PetEntity pet = new PetEntity();
 		owner.addPet(pet);
 		pet.setId(TEST_PET_ID);
 		given(this.owners.findById(TEST_OWNER_ID)).willReturn(owner);
@@ -72,7 +75,7 @@ class PetControllerTests {
 		mockMvc.perform(get("/owners/{ownerId}/pets/new", TEST_OWNER_ID))
 			.andExpect(status().isOk())
 			.andExpect(view().name("pets/createOrUpdatePetForm"))
-			.andExpect(model().attributeExists("pet"));
+			.andExpect(model().attributeExists("petDto"));
 	}
 
 	@Test
@@ -90,10 +93,10 @@ class PetControllerTests {
 		mockMvc
 			.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
 				.param("birthDate", "2015-02-12"))
-			.andExpect(model().attributeHasNoErrors("owner"))
-			.andExpect(model().attributeHasErrors("pet"))
-			.andExpect(model().attributeHasFieldErrors("pet", "type"))
-			.andExpect(model().attributeHasFieldErrorCode("pet", "type", "required"))
+			.andExpect(model().attributeHasNoErrors("ownerDto"))
+			.andExpect(model().attributeHasErrors("petDto"))
+			.andExpect(model().attributeHasFieldErrors("petDto", "type"))
+			.andExpect(model().attributeHasFieldErrorCode("petDto", "type", "required"))
 			.andExpect(status().isOk())
 			.andExpect(view().name("pets/createOrUpdatePetForm"));
 	}
@@ -102,7 +105,7 @@ class PetControllerTests {
 	void testInitUpdateForm() throws Exception {
 		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID))
 			.andExpect(status().isOk())
-			.andExpect(model().attributeExists("pet"))
+			.andExpect(model().attributeExists("petDto"))
 			.andExpect(view().name("pets/createOrUpdatePetForm"));
 	}
 
@@ -121,8 +124,8 @@ class PetControllerTests {
 		mockMvc
 			.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID).param("name", "Betty")
 				.param("birthDate", "2015/02/12"))
-			.andExpect(model().attributeHasNoErrors("owner"))
-			.andExpect(model().attributeHasErrors("pet"))
+			.andExpect(model().attributeHasNoErrors("ownerDto"))
+			.andExpect(model().attributeHasErrors("petDto"))
 			.andExpect(status().isOk())
 			.andExpect(view().name("pets/createOrUpdatePetForm"));
 	}

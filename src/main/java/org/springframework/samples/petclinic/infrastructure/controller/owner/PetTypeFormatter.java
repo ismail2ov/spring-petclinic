@@ -15,10 +15,12 @@
  */
 package org.springframework.samples.petclinic.infrastructure.controller.owner;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
+import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetTypeDto;
+import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapper;
 import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetType;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -36,24 +38,22 @@ import java.util.Locale;
  * @author Michael Isvy
  */
 @Component
-public class PetTypeFormatter implements Formatter<PetType> {
+@RequiredArgsConstructor
+public class PetTypeFormatter implements Formatter<PetTypeDto> {
 
 	private final OwnerRepository owners;
 
-	@Autowired
-	public PetTypeFormatter(OwnerRepository owners) {
-		this.owners = owners;
+	private final OwnerDtoMapper mapper;
+
+	@Override
+	public String print(PetTypeDto petTypeDto, Locale locale) {
+		return petTypeDto.getName();
 	}
 
 	@Override
-	public String print(PetType petType, Locale locale) {
-		return petType.getName();
-	}
-
-	@Override
-	public PetType parse(String text, Locale locale) throws ParseException {
-		Collection<PetType> findPetTypes = this.owners.findPetTypes();
-		for (PetType type : findPetTypes) {
+	public PetTypeDto parse(String text, Locale locale) throws ParseException {
+		Collection<PetTypeDto> findPetTypes = mapper.from(this.owners.findPetTypes());
+		for (PetTypeDto type : findPetTypes) {
 			if (type.getName().equals(text)) {
 				return type;
 			}

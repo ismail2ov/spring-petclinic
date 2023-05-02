@@ -17,10 +17,12 @@ package org.springframework.samples.petclinic.infrastructure.controller.owner;
 
 import java.util.Map;
 
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.Owner;
+import lombok.RequiredArgsConstructor;
+import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.OwnerDto;
+import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetDto;
+import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.VisitDto;
+import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapper;
 import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.Pet;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.Visit;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -40,13 +42,12 @@ import jakarta.validation.Valid;
  * @author Dave Syer
  */
 @Controller
+@RequiredArgsConstructor
 class VisitController {
 
 	private final OwnerRepository owners;
 
-	public VisitController(OwnerRepository owners) {
-		this.owners = owners;
-	}
+	private final OwnerDtoMapper mapper;
 
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
@@ -60,18 +61,18 @@ class VisitController {
 	 * @param petId
 	 * @return Pet
 	 */
-	@ModelAttribute("visit")
-	public Visit loadPetWithVisit(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
+	@ModelAttribute("visitDto")
+	public VisitDto loadPetWithVisitDto(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
 			Map<String, Object> model) {
-		Owner owner = this.owners.findById(ownerId);
+		OwnerDto ownerDto = mapper.from(this.owners.findById(ownerId));
 
-		Pet pet = owner.getPet(petId);
-		model.put("pet", pet);
-		model.put("owner", owner);
+		PetDto petDto = ownerDto.getPet(petId);
+		model.put("petDto", petDto);
+		model.put("ownerDto", ownerDto);
 
-		Visit visit = new Visit();
-		pet.addVisit(visit);
-		return visit;
+		VisitDto visitDto = new VisitDto();
+		petDto.addVisit(visitDto);
+		return visitDto;
 	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
@@ -84,14 +85,14 @@ class VisitController {
 	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
 	// called
 	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-	public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
-			BindingResult result) {
+	public String processNewVisitForm(@ModelAttribute OwnerDto ownerDto, @PathVariable int petId,
+			@Valid VisitDto visitDto, BindingResult result) {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateVisitForm";
 		}
 
-		owner.addVisit(petId, visit);
-		this.owners.save(owner);
+		ownerDto.addVisit(petId, visitDto);
+		this.owners.save(mapper.to(ownerDto));
 		return "redirect:/owners/{ownerId}";
 	}
 

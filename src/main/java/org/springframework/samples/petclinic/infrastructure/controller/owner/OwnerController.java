@@ -18,10 +18,12 @@ package org.springframework.samples.petclinic.infrastructure.controller.owner;
 import java.util.List;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.Owner;
+import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.OwnerDto;
+import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapper;
 import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,41 +46,40 @@ import jakarta.validation.Valid;
  * @author Michael Isvy
  */
 @Controller
+@RequiredArgsConstructor
 class OwnerController {
 
 	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
 
 	private final OwnerRepository owners;
 
-	public OwnerController(OwnerRepository clinicService) {
-		this.owners = clinicService;
-	}
+	private final OwnerDtoMapper mapper;
 
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	@ModelAttribute("owner")
-	public Owner findOwner(@PathVariable(name = "ownerId", required = false) Integer ownerId) {
-		return ownerId == null ? new Owner() : this.owners.findById(ownerId);
+	@ModelAttribute("ownerDto")
+	public OwnerDto findOwner(@PathVariable(name = "ownerId", required = false) Integer ownerId) {
+		return ownerId == null ? new OwnerDto() : this.mapper.from(this.owners.findById(ownerId));
 	}
 
 	@GetMapping("/owners/new")
 	public String initCreationForm(Map<String, Object> model) {
-		Owner owner = new Owner();
-		model.put("owner", owner);
+		OwnerDto ownerDto = new OwnerDto();
+		model.put("ownerDto", ownerDto);
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
 
 	@PostMapping("/owners/new")
-	public String processCreationForm(@Valid Owner owner, BindingResult result) {
+	public String processCreationForm(@Valid OwnerDto ownerDto, BindingResult result) {
 		if (result.hasErrors()) {
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
 
-		this.owners.save(owner);
-		return "redirect:/owners/" + owner.getId();
+		this.owners.save(mapper.to(ownerDto));
+		return "redirect:/owners/" + ownerDto.getId();
 	}
 
 	@GetMapping("/owners/find")
@@ -87,15 +88,15 @@ class OwnerController {
 	}
 
 	@GetMapping("/owners")
-	public String processFindForm(@RequestParam(defaultValue = "1") int page, Owner owner, BindingResult result,
+	public String processFindForm(@RequestParam(defaultValue = "1") int page, OwnerDto ownerDto, BindingResult result,
 			Model model) {
 		// allow parameterless GET request for /owners to return all records
-		if (owner.getLastName() == null) {
-			owner.setLastName(""); // empty string signifies broadest possible search
+		if (ownerDto.getLastName() == null) {
+			ownerDto.setLastName(""); // empty string signifies broadest possible search
 		}
 
 		// find owners by last name
-		Page<Owner> ownersResults = findPaginatedForOwnersLastName(page, owner.getLastName());
+		Page<OwnerDto> ownersResults = findPaginatedForOwnersLastName(page, ownerDto.getLastName());
 		if (ownersResults.isEmpty()) {
 			// no owners found
 			result.rejectValue("lastName", "notFound", "not found");
@@ -103,18 +104,18 @@ class OwnerController {
 		}
 
 		if (ownersResults.getTotalElements() == 1) {
-			// 1 owner found
-			owner = ownersResults.iterator().next();
-			return "redirect:/owners/" + owner.getId();
+			// 1 ownerDto found
+			ownerDto = ownersResults.iterator().next();
+			return "redirect:/owners/" + ownerDto.getId();
 		}
 
 		// multiple owners found
 		return addPaginationModel(page, model, ownersResults);
 	}
 
-	private String addPaginationModel(int page, Model model, Page<Owner> paginated) {
+	private String addPaginationModel(int page, Model model, Page<OwnerDto> paginated) {
 		model.addAttribute("listOwners", paginated);
-		List<Owner> listOwners = paginated.getContent();
+		List<OwnerDto> listOwners = paginated.getContent();
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", paginated.getTotalPages());
 		model.addAttribute("totalItems", paginated.getTotalElements());
@@ -122,41 +123,41 @@ class OwnerController {
 		return "owners/ownersList";
 	}
 
-	private Page<Owner> findPaginatedForOwnersLastName(int page, String lastname) {
+	private Page<OwnerDto> findPaginatedForOwnersLastName(int page, String lastname) {
 		int pageSize = 5;
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
-		return owners.findByLastName(lastname, pageable);
+		return mapper.from(owners.findByLastName(lastname, pageable));
 	}
 
 	@GetMapping("/owners/{ownerId}/edit")
 	public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
-		Owner owner = this.owners.findById(ownerId);
-		model.addAttribute(owner);
+		OwnerDto ownerDto = mapper.from(this.owners.findById(ownerId));
+		model.addAttribute(ownerDto);
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
 
 	@PostMapping("/owners/{ownerId}/edit")
-	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result,
+	public String processUpdateOwnerForm(@Valid OwnerDto ownerDto, BindingResult result,
 			@PathVariable("ownerId") int ownerId) {
 		if (result.hasErrors()) {
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
 
-		owner.setId(ownerId);
-		this.owners.save(owner);
+		ownerDto.setId(ownerId);
+		this.owners.save(mapper.to(ownerDto));
 		return "redirect:/owners/{ownerId}";
 	}
 
 	/**
-	 * Custom handler for displaying an owner.
-	 * @param ownerId the ID of the owner to display
+	 * Custom handler for displaying an ownerDto.
+	 * @param ownerId the ID of the ownerDto to display
 	 * @return a ModelMap with the model attributes for the view
 	 */
 	@GetMapping("/owners/{ownerId}")
 	public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
 		ModelAndView mav = new ModelAndView("owners/ownerDetails");
-		Owner owner = this.owners.findById(ownerId);
-		mav.addObject(owner);
+		OwnerDto ownerDto = mapper.from(this.owners.findById(ownerId));
+		mav.addObject(ownerDto);
 		return mav;
 	}
 

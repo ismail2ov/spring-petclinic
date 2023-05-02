@@ -15,7 +15,7 @@
  */
 package org.springframework.samples.petclinic.infrastructure.controller.owner;
 
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.Pet;
+import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetDto;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -36,20 +36,20 @@ public class PetValidator implements Validator {
 
 	@Override
 	public void validate(Object obj, Errors errors) {
-		Pet pet = (Pet) obj;
-		String name = pet.getName();
+		PetDto petDto = (PetDto) obj;
+		String name = petDto.getName();
 		// name validation
 		if (!StringUtils.hasLength(name)) {
 			errors.rejectValue("name", REQUIRED, REQUIRED);
 		}
 
 		// type validation
-		if (pet.isNew() && pet.getType() == null) {
+		if (petDto.isNew() && petDto.getType() == null) {
 			errors.rejectValue("type", REQUIRED, REQUIRED);
 		}
 
 		// birth date validation
-		if (pet.getBirthDate() == null) {
+		if (petDto.getBirthDate() == null) {
 			errors.rejectValue("birthDate", REQUIRED, REQUIRED);
 		}
 	}
@@ -59,7 +59,7 @@ public class PetValidator implements Validator {
 	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return Pet.class.isAssignableFrom(clazz);
+		return PetDto.class.isAssignableFrom(clazz);
 	}
 
 }
