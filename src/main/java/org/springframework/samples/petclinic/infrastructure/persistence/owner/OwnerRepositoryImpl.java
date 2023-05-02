@@ -3,7 +3,9 @@ package org.springframework.samples.petclinic.infrastructure.persistence.owner;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.petclinic.domain.model.PagedResult;
 import org.springframework.samples.petclinic.domain.owner.Owner;
 import org.springframework.samples.petclinic.domain.owner.OwnerRepository;
 import org.springframework.samples.petclinic.domain.owner.PetType;
@@ -29,18 +31,28 @@ public class OwnerRepositoryImpl implements OwnerRepository {
 	}
 
 	@Override
-	public Page<Owner> findByLastName(String lastname, Pageable pageable) {
-		return this.ownerMapper.from(this.ownerDataRepository.findByLastName(lastname, pageable));
+	public PagedResult<Owner> findByLastName(String lastname, int page, int pageSize) {
+		Pageable pageable = PageRequest.of(page, pageSize);
+		Page<OwnerEntity> ownerEntities = this.ownerDataRepository.findByLastName(lastname, pageable);
+
+		List<Owner> ownerList = this.ownerMapper.from(ownerEntities.getContent());
+
+		return new PagedResult<>(ownerList, ownerEntities.getTotalElements());
 	}
 
 	@Override
 	public List<PetType> findPetTypes() {
-		return this.ownerMapper.from(this.ownerDataRepository.findPetTypes());
+		return this.ownerMapper.petTypesFrom(this.ownerDataRepository.findPetTypes());
 	}
 
 	@Override
-	public Page<Owner> findAll(Pageable pageable) {
-		return this.ownerMapper.from(this.ownerDataRepository.findAll(pageable));
+	public PagedResult<Owner> findAll(int page, int pageSize) {
+		Pageable pageable = PageRequest.of(page, pageSize);
+		Page<OwnerEntity> ownerEntities = this.ownerDataRepository.findAll(pageable);
+
+		List<Owner> ownerList = this.ownerMapper.from(ownerEntities.getContent());
+
+		return new PagedResult<>(ownerList, ownerEntities.getTotalElements());
 	}
 
 }

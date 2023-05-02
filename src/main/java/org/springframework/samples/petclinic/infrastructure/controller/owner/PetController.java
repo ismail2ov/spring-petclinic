@@ -53,7 +53,7 @@ class PetController {
 
 	@ModelAttribute("types")
 	public Collection<PetTypeDto> populatePetTypes() {
-		return mapper.from(this.ownerService.findPetTypes());
+		return mapper.petTypeFrom(this.ownerService.findPetTypes());
 	}
 
 	@ModelAttribute("ownerDto")

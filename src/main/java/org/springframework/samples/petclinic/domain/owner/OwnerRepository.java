@@ -1,8 +1,7 @@
 package org.springframework.samples.petclinic.domain.owner;
 
 import java.util.List;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.samples.petclinic.domain.model.PagedResult;
 
 public interface OwnerRepository {
 
@@ -10,10 +9,10 @@ public interface OwnerRepository {
 
 	void save(Owner owner);
 
-	Page<Owner> findByLastName(String lastname, Pageable pageable);
+	PagedResult<Owner> findByLastName(String lastname, int page, int pageSize);
 
 	List<PetType> findPetTypes();
 
-	Page<Owner> findAll(Pageable pageable);
+	PagedResult<Owner> findAll(int page, int pageSize);
 
 }
