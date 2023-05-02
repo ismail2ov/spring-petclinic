@@ -29,7 +29,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerEntity;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
+import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerDataRepository;
 import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetEntity;
 import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetTypeEntity;
 import org.springframework.samples.petclinic.infrastructure.persistence.owner.VisitEntity;
@@ -72,7 +72,7 @@ import org.springframework.transaction.annotation.Transactional;
 class ClinicServiceTests {
 
 	@Autowired
-	protected OwnerRepository owners;
+	protected OwnerDataRepository owners;
 
 	@Autowired
 	protected VetDataRepository vets;

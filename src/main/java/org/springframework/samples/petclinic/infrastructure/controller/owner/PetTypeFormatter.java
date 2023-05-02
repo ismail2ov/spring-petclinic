@@ -15,17 +15,15 @@
  */
 package org.springframework.samples.petclinic.infrastructure.controller.owner;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.Formatter;
-import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetTypeDto;
-import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapper;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
-import org.springframework.stereotype.Component;
-
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Locale;
+import lombok.RequiredArgsConstructor;
+import org.springframework.format.Formatter;
+import org.springframework.samples.petclinic.application.OwnerService;
+import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetTypeDto;
+import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapper;
+import org.springframework.stereotype.Component;
 
 /**
  * Instructs Spring MVC on how to parse and print elements of type 'PetType'. Starting
@@ -41,7 +39,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class PetTypeFormatter implements Formatter<PetTypeDto> {
 
-	private final OwnerRepository owners;
+	private final OwnerService ownerService;
 
 	private final OwnerDtoMapper mapper;
 
@@ -52,7 +50,7 @@ public class PetTypeFormatter implements Formatter<PetTypeDto> {
 
 	@Override
 	public PetTypeDto parse(String text, Locale locale) throws ParseException {
-		Collection<PetTypeDto> findPetTypes = mapper.from(this.owners.findPetTypes());
+		Collection<PetTypeDto> findPetTypes = mapper.from(this.ownerService.findPetTypes());
 		for (PetTypeDto type : findPetTypes) {
 			if (type.getName().equals(text)) {
 				return type;

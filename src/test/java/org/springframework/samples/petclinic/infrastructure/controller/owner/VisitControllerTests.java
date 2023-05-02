@@ -19,21 +19,20 @@ package org.springframework.samples.petclinic.infrastructure.controller.owner;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapper;
+import org.springframework.samples.petclinic.application.OwnerService;
+import org.springframework.samples.petclinic.domain.owner.Owner;
+import org.springframework.samples.petclinic.domain.owner.Pet;
 import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapperImpl;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerEntity;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
@@ -53,15 +52,15 @@ class VisitControllerTests {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private OwnerRepository owners;
+	private OwnerService ownerService;
 
 	@BeforeEach
 	void init() {
-		OwnerEntity owner = new OwnerEntity();
-		PetEntity pet = new PetEntity();
-		owner.addPet(pet);
-		pet.setId(TEST_PET_ID);
-		given(this.owners.findById(TEST_OWNER_ID)).willReturn(owner);
+
+		Pet pet = Pet.builder().id(TEST_PET_ID).build();
+		Owner owner = Owner.builder().pets(List.of(pet)).build();
+
+		given(this.ownerService.findById(TEST_OWNER_ID)).willReturn(owner);
 	}
 
 	@Test

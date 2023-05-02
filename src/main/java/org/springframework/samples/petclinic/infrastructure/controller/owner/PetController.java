@@ -15,14 +15,14 @@
  */
 package org.springframework.samples.petclinic.infrastructure.controller.owner;
 
+import jakarta.validation.Valid;
 import java.util.Collection;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.samples.petclinic.application.OwnerService;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.OwnerDto;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetDto;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetTypeDto;
 import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapper;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -34,8 +34,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import jakarta.validation.Valid;
 
 /**
  * @author Juergen Hoeller
@@ -49,24 +47,25 @@ class PetController {
 
 	private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
 
-	private final OwnerRepository owners;
+	private final OwnerService ownerService;
 
 	private final OwnerDtoMapper mapper;
 
 	@ModelAttribute("types")
 	public Collection<PetTypeDto> populatePetTypes() {
-		return mapper.from(this.owners.findPetTypes());
+		return mapper.from(this.ownerService.findPetTypes());
 	}
 
 	@ModelAttribute("ownerDto")
 	public OwnerDto findOwner(@PathVariable("ownerId") int ownerId) {
-		return mapper.from(this.owners.findById(ownerId));
+		return mapper.from(this.ownerService.findById(ownerId));
 	}
 
 	@ModelAttribute("petDto")
 	public PetDto findPet(@PathVariable("ownerId") int ownerId,
 			@PathVariable(name = "petId", required = false) Integer petId) {
-		return petId == null ? new PetDto() : mapper.from(this.owners.findById(ownerId)).getPet(petId);
+		OwnerDto ownerDto = mapper.from(this.ownerService.findById(ownerId));
+		return petId == null ? new PetDto() : ownerDto.getPet(petId);
 	}
 
 	@InitBinder("ownerDto")
@@ -100,7 +99,7 @@ class PetController {
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		}
 
-		this.owners.save(mapper.to(ownerDto));
+		this.ownerService.save(mapper.to(ownerDto));
 		return "redirect:/owners/{ownerId}";
 	}
 
@@ -119,7 +118,7 @@ class PetController {
 		}
 
 		ownerDto.addPet(petDto);
-		this.owners.save(mapper.to(ownerDto));
+		this.ownerService.save(mapper.to(ownerDto));
 		return "redirect:/owners/{ownerId}";
 	}
 

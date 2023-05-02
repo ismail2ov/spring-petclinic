@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Sam Brannen
  * @author Michael Isvy
  */
-public interface OwnerRepository extends Repository<OwnerEntity, Integer> {
+public interface OwnerDataRepository extends Repository<OwnerEntity, Integer> {
 
 	/**
 	 * Retrieve all {@link PetTypeEntity}s from the data store.

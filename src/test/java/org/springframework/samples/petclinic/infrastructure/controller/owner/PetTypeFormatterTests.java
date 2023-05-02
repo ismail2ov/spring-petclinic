@@ -20,22 +20,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.samples.petclinic.application.OwnerService;
+import org.springframework.samples.petclinic.domain.owner.PetType;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetTypeDto;
-import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapper;
 import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapperImpl;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetTypeEntity;
 
 /**
  * Test class for {@link PetTypeFormatter}
@@ -46,13 +43,13 @@ import org.springframework.samples.petclinic.infrastructure.persistence.owner.Pe
 class PetTypeFormatterTests {
 
 	@Mock
-	private OwnerRepository pets;
+	private OwnerService ownerService;
 
 	private PetTypeFormatter petTypeFormatter;
 
 	@BeforeEach
 	void setup() {
-		this.petTypeFormatter = new PetTypeFormatter(pets, new OwnerDtoMapperImpl());
+		this.petTypeFormatter = new PetTypeFormatter(ownerService, new OwnerDtoMapperImpl());
 	}
 
 	@Test
@@ -65,14 +62,14 @@ class PetTypeFormatterTests {
 
 	@Test
 	void shouldParse() throws ParseException {
-		given(this.pets.findPetTypes()).willReturn(makePetTypes());
+		given(this.ownerService.findPetTypes()).willReturn(makePetTypes());
 		PetTypeDto petType = petTypeFormatter.parse("Bird", Locale.ENGLISH);
 		assertThat(petType.getName()).isEqualTo("Bird");
 	}
 
 	@Test
 	void shouldThrowParseException() throws ParseException {
-		given(this.pets.findPetTypes()).willReturn(makePetTypes());
+		given(this.ownerService.findPetTypes()).willReturn(makePetTypes());
 		Assertions.assertThrows(ParseException.class, () -> {
 			petTypeFormatter.parse("Fish", Locale.ENGLISH);
 		});
@@ -80,20 +77,10 @@ class PetTypeFormatterTests {
 
 	/**
 	 * Helper method to produce some sample pet types just for test purpose
-	 * @return {@link Collection} of {@link PetTypeEntity}
+	 * @return {@link Collection} of {@link PetType}
 	 */
-	private List<PetTypeEntity> makePetTypes() {
-		List<PetTypeEntity> petTypes = new ArrayList<>();
-		petTypes.add(new PetTypeEntity() {
-			{
-				setName("Dog");
-			}
-		});
-		petTypes.add(new PetTypeEntity() {
-			{
-				setName("Bird");
-			}
-		});
+	private List<PetType> makePetTypes() {
+		List<PetType> petTypes = List.of(PetType.builder().name("Dig").build(), PetType.builder().name("Bird").build());
 		return petTypes;
 	}
 

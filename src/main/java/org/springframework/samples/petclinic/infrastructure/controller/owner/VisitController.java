@@ -15,14 +15,14 @@
  */
 package org.springframework.samples.petclinic.infrastructure.controller.owner;
 
+import jakarta.validation.Valid;
 import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.samples.petclinic.application.OwnerService;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.OwnerDto;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetDto;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.VisitDto;
 import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapper;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -31,8 +31,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import jakarta.validation.Valid;
 
 /**
  * @author Juergen Hoeller
@@ -45,7 +43,7 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 class VisitController {
 
-	private final OwnerRepository owners;
+	private final OwnerService ownerService;
 
 	private final OwnerDtoMapper mapper;
 
@@ -64,7 +62,7 @@ class VisitController {
 	@ModelAttribute("visitDto")
 	public VisitDto loadPetWithVisitDto(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
 			Map<String, Object> model) {
-		OwnerDto ownerDto = mapper.from(this.owners.findById(ownerId));
+		OwnerDto ownerDto = mapper.from(this.ownerService.findById(ownerId));
 
 		PetDto petDto = ownerDto.getPet(petId);
 		model.put("petDto", petDto);
@@ -92,7 +90,7 @@ class VisitController {
 		}
 
 		ownerDto.addVisit(petId, visitDto);
-		this.owners.save(mapper.to(ownerDto));
+		this.ownerService.save(mapper.to(ownerDto));
 		return "redirect:/owners/{ownerId}";
 	}
 

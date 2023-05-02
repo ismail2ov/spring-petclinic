@@ -4,28 +4,26 @@ import java.util.Collection;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
-import org.springframework.samples.petclinic.domain.vet.Vet;
+import org.springframework.samples.petclinic.domain.owner.Owner;
+import org.springframework.samples.petclinic.domain.owner.Pet;
+import org.springframework.samples.petclinic.domain.owner.PetType;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.OwnerDto;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetDto;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetTypeDto;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerEntity;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetEntity;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetTypeEntity;
-import org.springframework.samples.petclinic.infrastructure.view.VetDto;
 
 @Mapper
 public interface OwnerDtoMapper {
 
-	OwnerDto from(OwnerEntity ownerEntity);
+	OwnerDto from(Owner owner);
 
-	OwnerEntity to(OwnerDto ownerDto);
+	Owner to(OwnerDto ownerDto);
 
-	default Page<OwnerDto> from(Page<OwnerEntity> page) {
+	default Page<OwnerDto> from(Page<Owner> page) {
 		return page.map(this::from);
 	}
 
-	Collection<PetTypeDto> from(List<PetTypeEntity> petTypes);
+	Collection<PetTypeDto> from(List<PetType> petTypes);
 
-	PetDto from(PetEntity pet);
+	PetDto from(Pet pet);
 
 }

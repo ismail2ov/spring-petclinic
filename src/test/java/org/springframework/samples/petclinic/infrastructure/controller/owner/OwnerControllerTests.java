@@ -31,8 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
-
+import java.util.Optional;
+import java.util.Set;
 import org.assertj.core.util.Lists;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -46,13 +48,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.petclinic.application.OwnerService;
+import org.springframework.samples.petclinic.domain.owner.Owner;
+import org.springframework.samples.petclinic.domain.owner.Pet;
+import org.springframework.samples.petclinic.domain.owner.PetType;
+import org.springframework.samples.petclinic.domain.owner.Visit;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.PetDto;
 import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapperImpl;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerEntity;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.OwnerRepository;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetEntity;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.PetTypeEntity;
-import org.springframework.samples.petclinic.infrastructure.persistence.owner.VisitEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
@@ -70,41 +72,48 @@ class OwnerControllerTests {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private OwnerRepository owners;
+	private OwnerService ownerService;
 
-	private OwnerEntity george() {
-		OwnerEntity george = new OwnerEntity();
-		george.setId(TEST_OWNER_ID);
-		george.setFirstName("George");
-		george.setLastName("Franklin");
-		george.setAddress("110 W. Liberty St.");
-		george.setCity("Madison");
-		george.setTelephone("6085551023");
-		PetEntity max = new PetEntity();
-		PetTypeEntity dog = new PetTypeEntity();
-		dog.setName("dog");
-		max.setType(dog);
-		max.setName("Max");
-		max.setBirthDate(LocalDate.now());
-		george.addPet(max);
-		max.setId(1);
-		return george;
-	};
+	private Owner george() {
+		return george(Optional.empty());
+	}
+
+	private Owner george(Optional<Visit> visit) {
+		PetType dog = PetType.builder().name("dog").build();
+
+		Pet max = Pet.builder()
+			.id(1)
+			.type(dog)
+			.name("Max")
+			.birthDate(LocalDate.now())
+			.visits(visit.map(Set::of).orElse(Collections.emptySet()))
+			.build();
+
+		return Owner.builder()
+			.id(TEST_OWNER_ID)
+			.firstName("George")
+			.lastName("Franklin")
+			.address("110 W. Liberty St.")
+			.city("Madison")
+			.telephone("6085551023")
+			.pets(List.of(max))
+			.build();
+	}
+
+	;
 
 	@BeforeEach
 	void setup() {
+		Visit visit = Visit.builder().date(LocalDate.now()).build();
+		Owner george = george(Optional.of(visit));
 
-		OwnerEntity george = george();
-		given(this.owners.findByLastName(eq("Franklin"), any(Pageable.class)))
-			.willReturn(new PageImpl<OwnerEntity>(Lists.newArrayList(george)));
+		given(this.ownerService.findByLastName(eq("Franklin"), any(Pageable.class)))
+			.willReturn(new PageImpl<Owner>(Lists.newArrayList(george)));
 
-		given(this.owners.findAll(any(Pageable.class)))
-			.willReturn(new PageImpl<OwnerEntity>(Lists.newArrayList(george)));
+		given(this.ownerService.findAll(any(Pageable.class)))
+			.willReturn(new PageImpl<Owner>(Lists.newArrayList(george)));
 
-		given(this.owners.findById(TEST_OWNER_ID)).willReturn(george);
-		VisitEntity visit = new VisitEntity();
-		visit.setDate(LocalDate.now());
-		george.getPet("Max").getVisits().add(visit);
+		given(this.ownerService.findById(TEST_OWNER_ID)).willReturn(george);
 
 	}
 
@@ -148,15 +157,15 @@ class OwnerControllerTests {
 
 	@Test
 	void testProcessFindFormSuccess() throws Exception {
-		Page<OwnerEntity> tasks = new PageImpl<OwnerEntity>(Lists.newArrayList(george(), new OwnerEntity()));
-		Mockito.when(this.owners.findByLastName(anyString(), any(Pageable.class))).thenReturn(tasks);
+		Page<Owner> tasks = new PageImpl<Owner>(Lists.newArrayList(george(), Owner.builder().build()));
+		Mockito.when(this.ownerService.findByLastName(anyString(), any(Pageable.class))).thenReturn(tasks);
 		mockMvc.perform(get("/owners?page=1")).andExpect(status().isOk()).andExpect(view().name("owners/ownersList"));
 	}
 
 	@Test
 	void testProcessFindFormByLastName() throws Exception {
-		Page<OwnerEntity> tasks = new PageImpl<OwnerEntity>(Lists.newArrayList(george()));
-		Mockito.when(this.owners.findByLastName(eq("Franklin"), any(Pageable.class))).thenReturn(tasks);
+		Page<Owner> tasks = new PageImpl<Owner>(Lists.newArrayList(george()));
+		Mockito.when(this.ownerService.findByLastName(eq("Franklin"), any(Pageable.class))).thenReturn(tasks);
 		mockMvc.perform(get("/owners?page=1").param("lastName", "Franklin"))
 			.andExpect(status().is3xxRedirection())
 			.andExpect(view().name("redirect:/owners/" + TEST_OWNER_ID));
@@ -164,8 +173,8 @@ class OwnerControllerTests {
 
 	@Test
 	void testProcessFindFormNoOwnersFound() throws Exception {
-		Page<OwnerEntity> tasks = new PageImpl<OwnerEntity>(Lists.newArrayList());
-		Mockito.when(this.owners.findByLastName(eq("Unknown Surname"), any(Pageable.class))).thenReturn(tasks);
+		Page<Owner> tasks = new PageImpl<Owner>(Lists.newArrayList());
+		Mockito.when(this.ownerService.findByLastName(eq("Unknown Surname"), any(Pageable.class))).thenReturn(tasks);
 		mockMvc.perform(get("/owners?page=1").param("lastName", "Unknown Surname"))
 			.andExpect(status().isOk())
 			.andExpect(model().attributeHasFieldErrors("ownerDto", "lastName"))
