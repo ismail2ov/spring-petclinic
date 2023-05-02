@@ -3,7 +3,6 @@ package org.springframework.samples.petclinic.infrastructure.controller.mapper;
 import java.util.Collection;
 import java.util.List;
 import org.mapstruct.Mapper;
-import org.springframework.data.domain.Page;
 import org.springframework.samples.petclinic.domain.owner.Owner;
 import org.springframework.samples.petclinic.domain.owner.Pet;
 import org.springframework.samples.petclinic.domain.owner.PetType;
@@ -18,12 +17,10 @@ public interface OwnerDtoMapper {
 
 	Owner to(OwnerDto ownerDto);
 
-	default Page<OwnerDto> from(Page<Owner> page) {
-		return page.map(this::from);
-	}
-
-	Collection<PetTypeDto> from(List<PetType> petTypes);
+	Collection<PetTypeDto> petTypeFrom(List<PetType> petTypes);
 
 	PetDto from(Pet pet);
+
+	List<OwnerDto> from(List<Owner> owners);
 
 }

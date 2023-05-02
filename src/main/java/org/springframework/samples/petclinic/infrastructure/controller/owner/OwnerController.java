@@ -20,9 +20,11 @@ import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.application.OwnerService;
+import org.springframework.samples.petclinic.domain.model.PagedResult;
 import org.springframework.samples.petclinic.domain.owner.Owner;
 import org.springframework.samples.petclinic.infrastructure.controller.dto.owner.OwnerDto;
 import org.springframework.samples.petclinic.infrastructure.controller.mapper.OwnerDtoMapper;
@@ -129,9 +131,10 @@ class OwnerController {
 
 	private Page<OwnerDto> findPaginatedForOwnersLastName(int page, String lastname) {
 		int pageSize = 5;
+		PagedResult<Owner> ownerPage = ownerService.findByLastName(lastname, page - 1, pageSize);
+		List<OwnerDto> ownerList = mapper.from(ownerPage.getContent());
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
-		Page<Owner> ownerPage = ownerService.findByLastName(lastname, pageable);
-		return mapper.from(ownerPage);
+		return new PageImpl<>(ownerList, pageable, ownerPage.getTotalElements());
 	}
 
 	@GetMapping("/owners/{ownerId}/edit")

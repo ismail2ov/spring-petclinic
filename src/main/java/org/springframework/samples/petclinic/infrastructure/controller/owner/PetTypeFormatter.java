@@ -50,7 +50,7 @@ public class PetTypeFormatter implements Formatter<PetTypeDto> {
 
 	@Override
 	public PetTypeDto parse(String text, Locale locale) throws ParseException {
-		Collection<PetTypeDto> findPetTypes = mapper.from(this.ownerService.findPetTypes());
+		Collection<PetTypeDto> findPetTypes = mapper.petTypeFrom(this.ownerService.findPetTypes());
 		for (PetTypeDto type : findPetTypes) {
 			if (type.getName().equals(text)) {
 				return type;
